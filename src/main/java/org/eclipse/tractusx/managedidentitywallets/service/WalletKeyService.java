@@ -93,7 +93,7 @@ public class WalletKeyService extends BaseService<WalletKey, Long> {
 
     public Object getPrivateKeyByWalletIdentifierAndAlgorithm(long walletId, SupportedAlgorithms algorithm) {
         WalletKey wallet = walletKeyRepository.getByWalletIdAndAlgorithm(walletId, algorithm.toString());
-        String privateKey = encryptionUtils.decrypt(wallet.getPrivateKey());
+        String privateKey = encryptionUtils.decryptPasswordBased(wallet.getPrivateKey());
         byte[] content = new PemReader(new StringReader(privateKey)).readPemObject().getContent();
         if (SupportedAlgorithms.ED25519.equals(algorithm)) {
             return new x21559PrivateKey(content);

@@ -36,6 +36,7 @@ import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.gen.ECKeyGenerator;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.tractusx.managedidentitywallets.config.MIWSettings;
@@ -127,6 +128,7 @@ public class JwtPresentationES256KService {
         return createSignedJwt(verifiablePresentation.getId(), issuer, audience, serializedVerifiablePresentation, ecPrivateKey);
     }
 
+    @SneakyThrows
     @Transactional(isolation = Isolation.READ_UNCOMMITTED, propagation = Propagation.REQUIRES_NEW)
     public Wallet storeWalletKeyES256K(Wallet wallet, String keyId) {
         try {
@@ -152,8 +154,8 @@ public class JwtPresentationES256KService {
                     .keyId(keyId)
                     .referenceKey(REFERENCE_KEY)
                     .vaultAccessToken(VAULT_ACCESS_TOKEN)
-                    .privateKey(encryptionUtils.encrypt(getKeyString(ecKey.toECPrivateKey().getEncoded(), PRIVATE_KEY)))
-                    .publicKey(encryptionUtils.encrypt(getKeyString(ecKey.toECPublicKey().getEncoded(), PUBLIC_KEY)))
+                    .privateKey(encryptionUtils.encryptPasswordBased(getKeyString(ecKey.toECPrivateKey().getEncoded(), PRIVATE_KEY)))
+                    .publicKey(encryptionUtils.encryptPasswordBased(getKeyString(ecKey.toECPublicKey().getEncoded(), PUBLIC_KEY)))
                     .algorithm(SupportedAlgorithms.ES256K.toString())
                     .build();
             //Save key ES256K

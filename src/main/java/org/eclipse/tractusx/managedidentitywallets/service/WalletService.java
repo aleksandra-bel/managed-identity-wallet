@@ -263,8 +263,8 @@ public class WalletService extends BaseService<Wallet, Long> {
                 .keyId(keyId)
                 .referenceKey(REFERENCE_KEY)
                 .vaultAccessToken(VAULT_ACCESS_TOKEN)
-                .privateKey(encryptionUtils.encrypt(getKeyString(keyPair.getPrivateKey().asByte(), StringPool.PRIVATE_KEY)))
-                .publicKey(encryptionUtils.encrypt(getKeyString(keyPair.getPublicKey().asByte(), StringPool.PUBLIC_KEY)))
+                .privateKey(encryptionUtils.encryptPasswordBased(getKeyString(keyPair.getPrivateKey().asByte(), StringPool.PRIVATE_KEY)))
+                .publicKey(encryptionUtils.encryptPasswordBased(getKeyString(keyPair.getPublicKey().asByte(), StringPool.PUBLIC_KEY)))
                 .algorithm(SupportedAlgorithms.ED25519.toString())
                 .build();
 
