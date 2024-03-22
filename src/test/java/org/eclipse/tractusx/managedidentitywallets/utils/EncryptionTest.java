@@ -63,7 +63,7 @@ class EncryptionTest {
         String plainText = "-----BEGIN PRIVATE KEY-----\n" +
                 "94CyfbZLcCZ/3b+zTqpzZTlocGvMTFYYc0hfSE+E7HY=\n" +
                 "-----END PRIVATE KEY-----\n";
-        String password = "tl57qilhklaqzi6aozfjg1k26oz3gxs6";
+        String password = "password";
         miwSettings = new MIWSettings(null, password, null, null, null,
         null, null, null, null, false, null,
                 null);
