@@ -32,6 +32,7 @@ import org.eclipse.tractusx.managedidentitywallets.constant.RestURI;
 import org.eclipse.tractusx.managedidentitywallets.dto.ValidationResult;
 import org.eclipse.tractusx.managedidentitywallets.service.STSTokenValidationService;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -43,7 +44,10 @@ import static org.eclipse.tractusx.managedidentitywallets.constant.StringPool.CO
 
 public class PresentationIatpFilter extends GenericFilterBean {
 
-    RequestMatcher customFilterUrl = new AntPathRequestMatcher(RestURI.API_PRESENTATIONS_IATP);
+    RequestMatcher customFilterUrl = new OrRequestMatcher(
+            new AntPathRequestMatcher(RestURI.API_PRESENTATIONS_IATP),
+            new AntPathRequestMatcher(RestURI.PRESENTATIONS_QUERY)
+    );
 
     STSTokenValidationService validationService;
 
@@ -62,6 +66,9 @@ public class PresentationIatpFilter extends GenericFilterBean {
             if (StringUtils.isEmpty(authHeader)) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             } else {
+                if (authHeader.startsWith("Bearer ")) {
+                    authHeader = authHeader.substring(7);
+                }
                 ValidationResult result = validationService.validateToken(authHeader);
                 if (!result.isValid()) {
                     List<String> errorValues = new ArrayList<>();

@@ -25,10 +25,13 @@ import com.nimbusds.jwt.SignedJWT;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.managedidentitywallets.apidocs.PresentationControllerApiDocs;
 import org.eclipse.tractusx.managedidentitywallets.apidocs.PresentationControllerApiDocs.GetVerifiablePresentationIATPApiDocs;
 import org.eclipse.tractusx.managedidentitywallets.apidocs.PresentationControllerApiDocs.PostVerifiablePresentationApiDocs;
 import org.eclipse.tractusx.managedidentitywallets.apidocs.PresentationControllerApiDocs.PostVerifiablePresentationValidationApiDocs;
 import org.eclipse.tractusx.managedidentitywallets.constant.RestURI;
+import org.eclipse.tractusx.managedidentitywallets.dto.PresentationQueryMessage;
+import org.eclipse.tractusx.managedidentitywallets.dto.PresentationResponseMessage;
 import org.eclipse.tractusx.managedidentitywallets.service.PresentationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -43,6 +46,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.Map;
 
+import static org.eclipse.tractusx.managedidentitywallets.constant.StringPool.VP;
+import static org.eclipse.tractusx.managedidentitywallets.utils.CommonUtils.validatePresentationQueryMessage;
 import static org.eclipse.tractusx.managedidentitywallets.utils.TokenParsingUtils.getAccessToken;
 
 /**
@@ -111,5 +116,21 @@ public class PresentationController extends BaseController {
         SignedJWT accessToken = getAccessToken(stsToken);
         Map<String, Object> vp = presentationService.createVpWithRequiredScopes(accessToken, asJwt);
         return ResponseEntity.ok(vp);
+    }
+
+    @PostMapping(path = RestURI.PRESENTATIONS_QUERY, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @PresentationControllerApiDocs.GetVerifiablePresentationQueryApiDocs
+    public ResponseEntity<PresentationResponseMessage> createPresentation(@Parameter(hidden = true) @RequestHeader(name = "Authorization") String stsToken,
+                                                                          @RequestBody PresentationQueryMessage message,
+                                                                          @RequestParam(name = "asJwt", required = false, defaultValue = "false") boolean asJwt) {
+        validatePresentationQueryMessage(message);
+        SignedJWT accessToken = getAccessToken(stsToken);
+        Map<String, Object> vp = presentationService.createVpWithRequiredScopes(accessToken, asJwt);
+        PresentationResponseMessage responseMessage = PresentationResponseMessage.builder()
+                .presentation(vp.get(VP))
+                .context(message.getContext())
+                .type("PresentationResponseMessage")
+                .build();
+        return ResponseEntity.ok(responseMessage);
     }
 }

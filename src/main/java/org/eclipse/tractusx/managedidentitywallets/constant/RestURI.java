@@ -78,5 +78,6 @@ public class RestURI {
     public static final String API_PRESENTATIONS = "/api/presentations";
     public static final String API_PRESENTATIONS_VALIDATION = "/api/presentations/validation";
     public static final String API_PRESENTATIONS_IATP = "/api/presentations/iatp";
+    public static final String PRESENTATIONS_QUERY = "/presentations/query";
 
 }

@@ -119,10 +119,24 @@ public class OpenApiConfig {
                                 """)
                         .type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.HEADER).name(HttpHeaders.AUTHORIZATION));
 
+        //Auth using sts_token Bearer
+        String stsTokenBearerAuth = "sts_token_bearer";
+        components.addSecuritySchemes(stsTokenBearerAuth,
+                new SecurityScheme().name(stsTokenBearerAuth)
+                        .description("""
+                                **STS token Bearer**
+                                JWT Authorization header using the Bearer scheme.
+                                Enter **Bearer** [space] and then your token in the text input below:
+                                Example: Bearer 12345abcdef
+                                """)
+                        .type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.HEADER).name(HttpHeaders.AUTHORIZATION));
+
         return openAPI.components(components)
                 .addSecurityItem(new SecurityRequirement()
                         .addList(accessTokenAuth, Collections.emptyList()))
                 .addSecurityItem(new SecurityRequirement()
-                        .addList(stsTokenAuth, Collections.emptyList()));
+                        .addList(stsTokenAuth, Collections.emptyList()))
+                .addSecurityItem(new SecurityRequirement()
+                .addList(stsTokenBearerAuth, Collections.emptyList()));
     }
 }

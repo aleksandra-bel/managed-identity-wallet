@@ -82,6 +82,7 @@ public class SecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/actuator/health/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/token", POST.name())).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/presentations/iatp", GET.name())).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/presentations/query", POST.name())).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/actuator/loggers/**")).hasRole(ApplicationRole.ROLE_MANAGE_APP)
 
                         //did document resolve APIs

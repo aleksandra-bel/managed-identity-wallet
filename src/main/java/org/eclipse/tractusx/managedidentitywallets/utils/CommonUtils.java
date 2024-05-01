@@ -24,10 +24,12 @@ package org.eclipse.tractusx.managedidentitywallets.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.collections4.CollectionUtils;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.eclipse.tractusx.managedidentitywallets.constant.StringPool;
 import org.eclipse.tractusx.managedidentitywallets.dao.entity.HoldersCredential;
+import org.eclipse.tractusx.managedidentitywallets.dto.PresentationQueryMessage;
 import org.eclipse.tractusx.managedidentitywallets.dto.SecureTokenRequest;
 import org.eclipse.tractusx.managedidentitywallets.exception.BadDataException;
 import org.eclipse.tractusx.ssi.lib.crypt.x21559.x21559PrivateKey;
@@ -50,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -167,5 +170,16 @@ public class CommonUtils {
         final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> singleValueMap = map.toSingleValueMap();
         return objectMapper.convertValue(singleValueMap, SecureTokenRequest.class);
+    }
+
+    public static void validatePresentationQueryMessage(PresentationQueryMessage message) {
+        Object presentationDefinition = message.getPresentationDefinition();
+        List<String> scope = message.getScope();
+        if (Objects.isNull(presentationDefinition) && CollectionUtils.isEmpty(scope)) {
+            throw new BadDataException("One of the parameters PresentationDefinition or Scope must be provided");
+        }
+        else if (Objects.nonNull(presentationDefinition) && ! CollectionUtils.isEmpty(scope)) {
+            throw new BadDataException("Only one parameter either PresentationDefinition or Scope must be provided");
+        }
     }
 }
