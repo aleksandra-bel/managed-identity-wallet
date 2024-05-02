@@ -124,7 +124,7 @@ public class PresentationController extends BaseController {
                                                                           @RequestBody PresentationQueryMessage message,
                                                                           @RequestParam(name = "asJwt", required = false, defaultValue = "false") boolean asJwt) {
         validatePresentationQueryMessage(message);
-        SignedJWT accessToken = getAccessToken(stsToken);
+        SignedJWT accessToken = getAccessToken(stsToken.substring(7));
         Map<String, Object> vp = presentationService.createVpWithRequiredScopes(accessToken, asJwt);
         PresentationResponseMessage responseMessage = PresentationResponseMessage.builder()
                 .presentation(vp.get(VP))

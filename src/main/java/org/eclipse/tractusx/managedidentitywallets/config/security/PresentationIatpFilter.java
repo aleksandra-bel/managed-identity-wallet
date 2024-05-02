@@ -34,6 +34,7 @@ import org.eclipse.tractusx.managedidentitywallets.service.STSTokenValidationSer
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -42,6 +43,7 @@ import java.util.List;
 
 import static org.eclipse.tractusx.managedidentitywallets.constant.StringPool.COMA_SEPARATOR;
 
+@Component
 public class PresentationIatpFilter extends GenericFilterBean {
 
     RequestMatcher customFilterUrl = new OrRequestMatcher(
@@ -66,7 +68,7 @@ public class PresentationIatpFilter extends GenericFilterBean {
             if (StringUtils.isEmpty(authHeader)) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             } else {
-                if (authHeader.startsWith("Bearer ")) {
+                if (authHeader.startsWith("Bearer ") || authHeader.startsWith("BEARER ")) {
                     authHeader = authHeader.substring(7);
                 }
                 ValidationResult result = validationService.validateToken(authHeader);
